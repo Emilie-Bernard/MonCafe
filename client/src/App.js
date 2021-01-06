@@ -18,8 +18,7 @@ export default function () {
 
   function renderScreen() {
     if (state.loading) {
-      <RootStack.Screen name={'Splash'} component={SplashScreen} />
-
+      return <RootStack.Screen name={'Splash'} component={SplashScreen} />
     }
     return state.user ? (
       <RootStack.Screen name={'MainStack'} >
