@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { HeaderIconButton } from '../components/HeaderIconButton';
 import { AuthContext } from '../contexts/AuthContext';
 import { UserContext } from '../hooks/userContext';
 
@@ -11,15 +10,9 @@ export function ProductScreen({ navigation }) {
     
     React.useEffect(() => {
         navigation.setOptions({
-            headerRight: () =>
-                <HeaderIconButton
-                    name={'log-out'}
-                    onPress={() => {
-                        logout();
-                    }}
-                />
+
         });
-    }, [navigation, logout]);
+    }, [navigation]);
 
     return (
         <View style={styles.container}>
