@@ -5,16 +5,12 @@ import { UserContext } from '../hooks/userContext';
 
 
 export function ProductScreen({ navigation }) {
-    const { logout } = React.useContext(AuthContext);
     const user = React.useContext(UserContext);
-    
-    React.useEffect(() => {
-        navigation.setOptions();
-    }, [navigation]);
 
+    console.log(user);
     return (
         <View style={styles.container}>
-            <Text>Welcome to the product list</Text>
+            <Text>Welcome to the product list {user.name}</Text>
         </View>
     );
 }

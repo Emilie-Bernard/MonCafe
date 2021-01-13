@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import SecureStorage from 'react-native-secure-storage';
+import jwt_decode from "jwt-decode";
 
 import { BASE_URL } from '../config';
 import { createAction } from '../utils/createAction';
@@ -25,6 +26,11 @@ export function useAuth() {
                     return {
                         ...state,
                         loading: action.payload,
+                    }; 
+                case 'REFRESH_USER':
+                    return {
+                        ...state,
+                        user: { ...action.payload },
                     };
                 default:
                     return state;
@@ -43,12 +49,15 @@ export function useAuth() {
                     password
                 };
                 const { data } = await axios
-                    .post(BASE_URL + "/api/users/login", userData)
+                    .post(BASE_URL + "/api/users/login", userData).catch(function (error) {
+                        console.log(error);
+                    });
                 const user = {
                     token: data.token,
                 };
-                await SecureStorage.setItem('user', JSON.stringify(user));
-                dispatch(createAction('SET_USER', user));
+                const decoded = jwt_decode(user.token);
+                await SecureStorage.setItem('user', JSON.stringify(decoded));
+                dispatch(createAction('SET_USER', decoded));
             },
             logout: async () => {
                 await SecureStorage.removeItem('user');
@@ -63,7 +72,25 @@ export function useAuth() {
                     password2
                 };
                 const response = await axios
-                    .post(BASE_URL + "/api/users/signin", userData);
+                    .post(BASE_URL + "/api/users/signin", userData).catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            refresh: async (id) => {
+                const userData = {
+                    id,
+                };
+                const { data } = await axios
+                    .post(BASE_URL + "/api/users/refresh", userData).catch(function (error) {
+                        console.log(error);
+                    });
+                console.log(data);
+                const user = {
+                    token: data.token,
+                };
+                const decoded = jwt_decode(user.token);
+                await SecureStorage.setItem('user', JSON.stringify(decoded));
+                dispatch(createAction('REFRESH_USER', decoded));
             },
         }),
         []
