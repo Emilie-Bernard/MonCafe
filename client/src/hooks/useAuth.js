@@ -84,7 +84,6 @@ export function useAuth() {
                     .post(BASE_URL + "/api/users/refresh", userData).catch(function (error) {
                         console.log(error);
                     });
-                console.log(data);
                 const user = {
                     token: data.token,
                 };

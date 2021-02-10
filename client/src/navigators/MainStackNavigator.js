@@ -7,6 +7,23 @@ import { ProductScreen } from '../screens/ProductScreen';
 import { MapScreen } from '../screens/MapScreen';
 import { CommandScreen } from '../screens/CommandScreen';
 import { UserScreen } from '../screens/UserScreen';
+import { SearchScreen } from '../screens/SearchScreen';
+
+import { createStackNavigator } from '@react-navigation/stack'
+const ProductStack = createStackNavigator();
+
+ProductStackScreen = () => {
+    return (
+        <ProductStack.Navigator
+            mode={'modal'}
+            screenOptions={{
+                headerShown: false,
+            }}>
+        <ProductStack.Screen name="Products" component={ProductScreen} />
+        <ProductStack.Screen name="Search" component={SearchScreen} />
+    </ProductStack.Navigator>
+    )
+}
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -27,7 +44,7 @@ export function MainStackNavigator() {
                 }} />
             <Tab.Screen
                 name={'Products'}
-                component={ProductScreen}
+                component={ProductStackScreen}
                 options={{
                     tabBarLabel: 'Products',
                     tabBarIcon: ({ color }) => (

@@ -7,9 +7,9 @@ module.exports = function validateLoginInput(data) {
     data.id = !isEmpty(data.id) ? data.id : "";
 
     if (Validator.isEmpty(data.shop)) {
-        errors.email = "Shop field is required";
+        errors.shop = "Shop field is required";
     } else if (!Validator.isMongoId(data.shop)) {
-        errors.email = "Shop is invalid";
+        errors.shop = "Shop is invalid";
     }
     if (Validator.isEmpty(data.id)) {
         errors.id = "Id field is required";

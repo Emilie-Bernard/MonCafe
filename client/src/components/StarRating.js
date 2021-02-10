@@ -17,7 +17,7 @@ const StarRating = (props) => {
             name = 'ios-star-outline';
         }
 
-        stars.push((<Icon name={name} size={15} style={styles.star} key={i} />));
+        stars.push((<Icon name={name} size={props.size} style={styles.star} key={i} />));
     }
 
     return (

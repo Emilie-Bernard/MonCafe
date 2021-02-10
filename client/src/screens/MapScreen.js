@@ -54,7 +54,6 @@ export function MapScreen({ }) {
     useEffect(() => {
         mapAnimation.addListener(({ value }) => {
             let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-            console.log(index);
             if (index >= shops.length) {
                 index = shops.length - 1;
             }
@@ -203,7 +202,7 @@ export function MapScreen({ }) {
                         />
                         <View style={styles.textContent}>
                             <Text numberOfLine={1} style={styles.cardTitle}>{shop.title}</Text>
-                            <StarRating ratings={shop.rating} reviews={shop.reviews} />
+                            <StarRating ratings={shop.rating} reviews={shop.reviews} size={16} />
                             <Text numberOfLine={1} style={styles.cardDescription}>{shop.description}</Text>
                             <View style={styles.button}>
                                 <TouchableOpacity 

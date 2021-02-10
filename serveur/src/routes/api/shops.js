@@ -21,6 +21,33 @@ router.get("/get/:id", (req, res) => {
     });
 })
 
+router.get("/getMany", (req, res) => {
+    console.log(req.body.shops);
+    Shop.find({ _id: { $in: req.body.shops } }).then(shops => {
+        const response = {
+            count: shops.length,
+            shops: shops.map(doc => {
+                return {
+                    title: doc.title,
+                    description: doc.description,
+                    address: doc.address,
+                    image: doc.image,
+                    coordinate: doc.coordinate,
+                    rating: doc.rating,
+                    reviews: doc.reviews,
+                    _id: doc._id
+                };
+            })
+        };
+        res.status(200).json(response);
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            error: err,
+        });
+    });
+})
+
 router.get("/get", (req, res) => {
     Shop.find({})
         .then(shops => {

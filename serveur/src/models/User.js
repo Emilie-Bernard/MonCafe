@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Shop = require("./Shop");
+var ObjectId = mongoose.SchemaTypes.ObjectId;
+
 // Create Schema
 const UserSchema = new Schema({
   name: {
@@ -26,9 +29,9 @@ const UserSchema = new Schema({
     type: String, // Mail, Google or Facebook ?
     required: true
   },*/
-  /*store: {
-    type: Store, // favorite store of the user
-  },*/
+  shops: {
+    type: [{ type: ObjectId, ref: Shop }], // favorite store of the user
+  },
   /*favoris: {
     type: Favoris.id, // list of favorites products
     required: true
