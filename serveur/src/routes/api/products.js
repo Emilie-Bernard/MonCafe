@@ -34,8 +34,7 @@ router.post("/getMany", (req, res) => {
                     description: doc.description,
                     shops: doc.shops,
                     type: doc.type,
-                    size: doc.size,
-                    temperature: doc.temperature,
+                    price: doc.price,
                     image: doc.image,
                     rating: doc.rating,
                     reviews: doc.reviews,
@@ -62,8 +61,7 @@ router.get("/getByShop/:id", (req, res) => {
                     description: doc.description,
                     shops: doc.shops,
                     type: doc.type,
-                    size: doc.size,
-                    temperature: doc.temperature,
+                    price: doc.price,
                     image: doc.image,
                     rating: doc.rating,
                     reviews: doc.reviews,
@@ -91,8 +89,7 @@ router.get("/get", (req, res) => {
                         description: doc.description,
                         shops: doc.shops,
                         type: doc.type,
-                        size: doc.size,
-                        temperature: doc.temperature,
+                        price: doc.price,
                         image: doc.image,
                         rating: doc.rating,
                         reviews: doc.reviews,
@@ -122,8 +119,7 @@ router.post("/add", (req, res) => {
         description: req.body.description,
         shops: req.body.shops,
         type: req.body.type,
-        size: req.body.size,
-        temperature: req.body.temperature,
+        price: req.body.price,
         image: req.body.image
     });
     newProduct
@@ -147,10 +143,8 @@ router.patch("/update/:id", (req, res) => {
         updateOps["description"] = req.body.description;
     if (req.body.type)
         updateOps["type"] = req.body.type;
-    if (req.body.temperature)
-        updateOps["size"] = req.body.size;
-    if (req.body.temperature)
-        updateOps["temperature"] = req.body.temperature;
+    if (req.body.price)
+        updateOps["price"] = req.body.price;
     if (req.body.image)
         updateOps["image"] = req.body.image;
     if (req.body.rating)

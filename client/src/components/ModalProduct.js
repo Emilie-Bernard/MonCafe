@@ -28,6 +28,7 @@ const ModalProduct = (props) => {
                 <View style={styles.textView}>
                     <Text style={styles.text}>{props.product.name}</Text>
                     <StarRating ratings={props.product.rating} reviews={props.product.reviews} size={25} />
+                    <Text style={styles.price}>{props.product.price ? props.product.price : 0}€</Text>
                 </View>
                 <View style={styles.button}>
                     <TouchableOpacity 
@@ -71,6 +72,10 @@ const styles = StyleSheet.create({
     text: {
         margin: 5,
         fontSize: 26,
+    },
+    price: {
+        margin: 5,
+        fontSize: 20,
     },
     button: {
         width: '100%',

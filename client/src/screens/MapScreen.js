@@ -4,7 +4,7 @@ import Icon from 'react-native-ionicons';
 
 import { BASE_URL } from '../config';
 import StarRating from '../components/StarRating';
-import { UserContext } from '../hooks/userContext';
+import { UserContext } from '../contexts/userContext';
 import { AuthContext } from '../contexts/AuthContext';
 
 import {

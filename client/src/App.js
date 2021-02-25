@@ -8,7 +8,7 @@ import { lightTheme } from './themes/light';
 import { AuthContext } from './contexts/AuthContext';
 import { MainStackNavigator } from './navigators/MainStackNavigator';
 import { useAuth } from './hooks/useAuth';
-import { UserContext } from './hooks/userContext';
+import { UserContext } from './contexts/userContext';
 import { SplashScreen } from './screens/SplashScreen';
 
 const RootStack = createStackNavigator();

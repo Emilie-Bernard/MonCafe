@@ -16,9 +16,8 @@ const ProductSchema = new Schema({
         type: [{ type: ObjectId, ref: Shop }], // store where the product are available
     },
     type: String, // Drink, Sandwiches, Dessert
-    size: String, // Big Medium Small
-    temperature: String, // Hot, warm, cold
     image: String,
+    price: Number,
     rating: {
         type: Number,
         default: 0,

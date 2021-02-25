@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import { AuthContext } from '../contexts/AuthContext';
-import { UserContext } from '../hooks/userContext';
+import { UserContext } from '../contexts/userContext';
 
 const { width, height } = Dimensions.get("window");
 const ITEM_HEIGHT = 190;

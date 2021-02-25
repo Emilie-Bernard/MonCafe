@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { AuthContext } from '../contexts/AuthContext';
-import { UserContext } from '../hooks/userContext';
+import { UserContext } from '../contexts/userContext';
 import { State } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get("window");

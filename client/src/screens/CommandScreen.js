@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';
-import { UserContext } from '../hooks/userContext';
+import { UserContext } from '../contexts/userContext';
 
 
 export function CommandScreen({ navigation }) {
