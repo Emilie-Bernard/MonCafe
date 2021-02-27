@@ -9,12 +9,10 @@ import {
     View,
     Dimensions,
     StyleSheet,
-    TextInput,
     Text,
     Animated,
 } from 'react-native';
 
-import { AuthContext } from '../contexts/AuthContext';
 import { UserContext } from '../contexts/userContext';
 
 const { width, height } = Dimensions.get("window");
@@ -24,7 +22,6 @@ const ITEM_WIDTH = width * 0.8;
 export function ProductScreen({ navigation }) {
     const user = React.useContext(UserContext);
     const [shops, setShops] = React.useState([]);
-    const { refresh } = React.useContext(AuthContext);
     const [shop, setShop] = React.useState();
     const [type, setType] = React.useState(0);
     const scrollX = React.useRef(new Animated.Value(0)).current;

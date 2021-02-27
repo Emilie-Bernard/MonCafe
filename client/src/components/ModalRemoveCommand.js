@@ -8,18 +8,17 @@ import StarRating from './StarRating';
 import { CommandContext } from '../contexts/CommandContext';
 
 const WIDTH = Dimensions.get('window').width;
-const HEIGHT_MODAL = 280;
-const PICTURE_SIZE = 150;
+const HEIGHT_MODAL = 100;
 
 const ModalProduct = (props) => {
-    const { addCommand } = useContext(CommandContext);
+    const { removeCommand } = useContext(CommandContext);
 
     const closeModal = (bool) => {
         props.changeModalVisible(bool);
     }; 
     
-    const addProduct = (bool, product) => {
-        addCommand(product);
+    const removeProduct = (bool, product) => {
+        removeCommand(product);
         props.changeModalVisible(bool);
     };
 
@@ -28,14 +27,8 @@ const ModalProduct = (props) => {
             disabled={true}
             style={styles.container}>
             <View style={styles.modal}>
-                <Image
-                    source={{ uri: props.product.image }}
-                    style={styles.picture}
-                />
                 <View style={styles.textView}>
-                    <Text style={styles.text}>{props.product.name}</Text>
-                    <StarRating ratings={props.product.rating} reviews={props.product.reviews} size={25} />
-                    <Text style={styles.price}>{props.product.price ? props.product.price : 0}€</Text>
+                    <Text style={styles.text}>Voulez-vous vraiment supprimer ce produit : {props.product.name} ? </Text>
                 </View>
                 <View style={styles.button}>
                     <TouchableOpacity 
@@ -45,8 +38,8 @@ const ModalProduct = (props) => {
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style={styles.touchableOpacity} 
-                        onPress={() => addProduct(false, props.product)}>
-                        <Text style={styles.buttonText}>Commander</Text>
+                        onPress={() => removeProduct(false, props.product)}>
+                        <Text style={styles.buttonText}>Valider</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -66,23 +59,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10
     },
-    picture: {
-        width: WIDTH - 80,
-        height: PICTURE_SIZE,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10
-    },
     textView: {
         flex: 1,
         alignItems: 'center'
     },
     text: {
         margin: 5,
-        fontSize: 26,
-    },
-    price: {
-        margin: 5,
-        fontSize: 20,
+        fontSize: 15,
     },
     button: {
         width: '100%',
