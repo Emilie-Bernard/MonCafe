@@ -7,10 +7,16 @@ import { ProductScreen } from '../screens/ProductScreen';
 import { MapScreen } from '../screens/MapScreen';
 import { CommandScreen } from '../screens/CommandScreen';
 import { UserScreen } from '../screens/UserScreen';
+import { SettingScreen } from '../screens/SettingScreen';
 import { SearchScreen } from '../screens/SearchScreen';
+import { SideBar } from '../components/SideBar';
 
 import { createStackNavigator } from '@react-navigation/stack'
 const ProductStack = createStackNavigator();
+
+import { createDrawerNavigator } from '@react-navigation/drawer';
+const UserStack = createDrawerNavigator();
+
 
 ProductStackScreen = () => {
     return (
@@ -19,9 +25,24 @@ ProductStackScreen = () => {
             screenOptions={{
                 headerShown: false,
             }}>
-        <ProductStack.Screen name="Products" component={ProductScreen} />
-        <ProductStack.Screen name="Search" component={SearchScreen} />
-    </ProductStack.Navigator>
+            <ProductStack.Screen name="Products" component={ProductScreen} />
+            <ProductStack.Screen name="Search" component={SearchScreen} />
+        </ProductStack.Navigator>
+    )
+}
+
+UserStackScreen = () => {
+    return (
+        <UserStack.Navigator
+            initialRouteName="User"
+            drawerPosition={'right'}
+            screenOptions={{
+                headerShown: false,
+            }}
+            drawerContent={(props) => <SideBar {...props} />}>
+            <UserStack.Screen name="User" component={UserScreen} />
+            <UserStack.Screen name="Setting" component={SettingScreen} />
+        </UserStack.Navigator>
     )
 }
 
@@ -33,8 +54,8 @@ export function MainStackNavigator() {
             initialRouteName="Products"
             activeColor="#FFC469"
         >
-            <Tab.Screen 
-                name={'Map'} 
+            <Tab.Screen
+                name={'Map'}
                 component={MapScreen}
                 options={{
                     tabBarLabel: 'Map',
@@ -62,7 +83,7 @@ export function MainStackNavigator() {
                 }} />
             <Tab.Screen
                 name={'Users'}
-                component={UserScreen}
+                component={UserStackScreen}
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color }) => (

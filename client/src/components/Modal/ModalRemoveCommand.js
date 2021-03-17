@@ -4,8 +4,7 @@ import {
     TouchableOpacity, Dimensions
 } from 'react-native';
 
-import StarRating from './StarRating';
-import { CommandContext } from '../contexts/CommandContext';
+import { CommandContext } from '../../contexts/CommandContext';
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT_MODAL = 100;

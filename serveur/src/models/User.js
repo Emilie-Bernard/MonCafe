@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Shop = require("./Shop");
+const Product = require("./Product");
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 
 // Create Schema
@@ -32,9 +33,9 @@ const UserSchema = new Schema({
   shops: {
     type: [{ type: ObjectId, ref: Shop }], // favorite store of the user
   },
-  /*favoris: {
-    type: Favoris.id, // list of favorites products
+  favorites: {
+    type: [{ type: ObjectId, ref: Product }], // list of favorites products
     required: true
-  },*/
+  },
 });
 module.exports = User = mongoose.model("users", UserSchema);

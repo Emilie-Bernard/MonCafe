@@ -51,6 +51,33 @@ router.post("/getMany", (req, res) => {
     });
 })
 
+router.post("/getProducts", (req, res) => {
+    Product.find({ _id: { $in: [req.body.id] }}).then(products => {
+        const response = {
+            count: products.length,
+            products: products.map(doc => {
+                return {
+                    name: doc.name,
+                    description: doc.description,
+                    shops: doc.shops,
+                    type: doc.type,
+                    price: doc.price,
+                    image: doc.image,
+                    rating: doc.rating,
+                    reviews: doc.reviews,
+                    _id: doc._id
+                };
+            })
+        };
+        res.status(200).json(response);
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            error: err,
+        });
+    });
+})
+
 router.get("/getByShop/:id", (req, res) => {
     Product.find({ shops: req.params.id }).then(products => {
         const response = {

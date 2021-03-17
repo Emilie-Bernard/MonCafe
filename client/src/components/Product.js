@@ -9,7 +9,7 @@ import {
     Image, } from 'react-native';
 
 import Icon from 'react-native-ionicons';
-import {ModalProduct} from './ModalProduct'
+import {ModalProduct} from './Modal/ModalProduct'
 
 const PICTURE_SIZE = 70;
 const Product = (props) => {

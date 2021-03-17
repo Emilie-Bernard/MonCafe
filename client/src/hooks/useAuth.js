@@ -51,6 +51,7 @@ export function useAuth() {
                 const { data } = await axios
                     .post(BASE_URL + "/api/users/login", userData).catch(function (error) {
                         console.log(error);
+                        return error;
                     });
                 const user = {
                     token: data.token,

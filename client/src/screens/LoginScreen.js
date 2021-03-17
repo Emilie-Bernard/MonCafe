@@ -28,12 +28,12 @@ export function LoginScreen({navigation}) {
                         onChangeText={setEmail} />
                     <Input 
                         style={styles.input}
-                        placeholder="Password..."
+                        placeholder="Mot de passe..."
                         secureTextEntry
                         value={password}
                         onChangeText={setPassword} />
                     <FilledButton
-                        title="Connection"
+                        title="Connexion"
                         style={styles.loginButton}
                         onPress={async () => { 
                             try {
@@ -41,15 +41,16 @@ export function LoginScreen({navigation}) {
                                 await login(email, password);
                             } catch (e) {
                                 setLoading(false);
-                                setError(e.message);
+                                setError(e.error);
                             }
                         }} />
                     <TextButton
-                        title="Don't have account? Create one here"
+                        title="Pas de compte ? Créez-en un"
                         style={styles.registerButton}
                         onPress={() => {
                             navigation.navigate('Registration')
                          }} />
+                    
                 </View>
                 <Loading loading={loading} />
             </ImageBackground>

@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import {
-    StyleSheet, 
-    View, 
+    StyleSheet,
+    View,
     Text,
     FlatList,
     TouchableOpacity,
     Modal,
-    Image, } from 'react-native';
+    Image,
+} from 'react-native';
+import moment from 'moment';
 
 import Icon from 'react-native-ionicons';
-import {ModalProduct} from './Modal/ModalRemoveCommand'
+import { ModalCommand } from './Modal/ModalCommand'
 
 const PICTURE_SIZE = 70;
 const Product = (props) => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [data, setData] = useState();
+    const [isModalVisible, setIsModalVisible] = React.useState(false);
+    const [data, setData] = React.useState();
     const changeModalVisible = (state, data) => {
         setData(data);
         setIsModalVisible(state);
@@ -24,34 +26,33 @@ const Product = (props) => {
         <View style={{
             top: Platform.OS === 'ios' ? props.size + 10 : props.size,
             width: '90%',
-            height: props.bottom,}}>
+            height: props.bottom,
+        }}>
             <FlatList
-                data={props.products}
+                data={props.commands}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item._id}
                 renderItem={({ item, index }) => {
                     return <View style={styles.item}>
-                        <Image
-                            source={{ uri: item.image }}
-                            style={styles.itemPicture}
-                        />
                         <View style={styles.itemText}>
-                            <Text style={styles.itemName}>{item.name}</Text>
-                            <Text style={styles.itemDescription}>{item.price ? item.price : 0}€</Text>
+                            <Text style={styles.itemName}>{moment(item.date).format('D MMMM YYYY')}</Text>
+                            <Text style={styles.itemDescription}>Total : {item.total ? item.total : 0}€</Text>
+                            <Text style={styles.itemDescription}>Produits : {item.products.length ? item.products.length : 0}</Text>
                         </View>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.itemAdd}
                             onPress={() => changeModalVisible(true, item)}>
-                            <Icon name="close" color={"#F5F5F5"} size={30} />
+                            <Icon name="add" color={"#F5F5F5"} size={30} />
                         </TouchableOpacity>
                         <Modal
                             transparent={true}
                             animationType='fade'
                             visible={isModalVisible}
-                            onRequestClose={() => changeModalVisible(false, null)}>
-                            <ModalProduct 
-                            changeModalVisible={changeModalVisible}
-                            product={data} />
+                            onRequestClose={() => changeModalVisible(false)}>
+                            <ModalCommand
+                                changeModalVisible={changeModalVisible}
+                                commands={data}
+                                type={props.type} />
                         </Modal>
                     </View>
                 }}
@@ -81,14 +82,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 5
     },
-    itemPicture: {
-        width: PICTURE_SIZE,
-        height: PICTURE_SIZE,
-        borderRadius: 5,
-    },
     itemText: {
         paddingLeft: 10,
-        width: 230,
+        width: 300,
     },
     itemName: {
         fontSize: 20,
@@ -97,7 +93,8 @@ const styles = StyleSheet.create({
     },
     itemDescription: {
         color: "#F5F5F5",
-        flex: 1, flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        fontSize: 15,
     },
     itemAdd: {
         paddingLeft: 20,

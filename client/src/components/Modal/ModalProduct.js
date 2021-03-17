@@ -4,8 +4,12 @@ import {
     TouchableOpacity, Dimensions
 } from 'react-native';
 
-import StarRating from './StarRating';
-import { CommandContext } from '../contexts/CommandContext';
+import StarRating from '../StarRating';
+import { CommandContext } from '../../contexts/CommandContext';
+
+import Icon from 'react-native-ionicons';
+import { add } from 'react-native-reanimated';
+
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT_MODAL = 280;
@@ -23,6 +27,18 @@ const ModalProduct = (props) => {
         props.changeModalVisible(bool);
     };
 
+    const addFavorite = useCallback(async (productId) => {
+        const userData = {
+            product: productId,
+            id: user.id,
+        };
+        let uri = user.favorite.includes(productId) ? "/api/users/deleteShop" : "/api/users/addShop";
+        await axios.patch(BASE_URL + uri, userData).catch(function (error) {
+            console.log(error);
+        });
+        refresh(user.id);
+    });
+
     return (
         <TouchableOpacity
             disabled={true}
@@ -37,6 +53,9 @@ const ModalProduct = (props) => {
                     <StarRating ratings={props.product.rating} reviews={props.product.reviews} size={25} />
                     <Text style={styles.price}>{props.product.price ? props.product.price : 0}€</Text>
                 </View>
+                <Icon name={user.favorite.includes(props.product.id) ? "heart" : "heart-empty"} color={"#000"} size={30} onPress={() => {
+                    addFavorite(props.product.id)
+                }} />
                 <View style={styles.button}>
                     <TouchableOpacity 
                         style={styles.touchableOpacity}

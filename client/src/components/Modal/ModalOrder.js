@@ -6,11 +6,11 @@ import {
 } from 'react-native';
 
 
-import { BASE_URL } from '../config';
+import { BASE_URL } from '../../config';
 import axios from 'axios';
 
-import { CommandContext } from '../contexts/CommandContext';
-import { UserContext } from '../contexts/userContext';
+import { CommandContext } from '../../contexts/CommandContext';
+import { UserContext } from '../../contexts/userContext';
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT_MODAL = 300;

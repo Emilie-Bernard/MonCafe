@@ -7,7 +7,10 @@ import {
 import { CommandContext } from '../contexts/CommandContext';
 import { UserContext } from '../contexts/userContext';
 import Cart from '../components/Cart';
-import Progress from '../components/Progress';
+import Order from '../components/Order';
+
+import axios from 'axios';
+import { BASE_URL } from '../config';
 
 
 const { width, height } = Dimensions.get("window");
@@ -19,10 +22,18 @@ export function CommandScreen({ navigation }) {
     const { commands } = useContext(CommandContext);
     const scrollX = React.useRef(new Animated.Value(0)).current;
     const [type, setType] = React.useState(0);
-
+    const [orders, setOrders] = React.useState([]);
 
     const onItemIndexChange = React.useCallback((i) => {
         setType(i)
+        const status = i == 1 ? "Progress" : "Finish";
+        const progressData = {
+            user: user.id,
+            status: status,
+        };
+        axios.post(BASE_URL + "/api/commands/getMany", progressData).then(({ data }) => {
+            setOrders(data.commands);
+        })
     }, []);
 
     const categories = [
@@ -88,7 +99,7 @@ export function CommandScreen({ navigation }) {
             </Animated.FlatList>
             {type == 0 ? 
                 <Cart commands={commands}></Cart>
-                : type == 1 ? <Progress /> : <Progress />}
+                : type == 1 ? <Order commands={orders} type={type} /> : <Order commands={orders} type={type} />}
         </View>
     );
 }

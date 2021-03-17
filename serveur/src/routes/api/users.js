@@ -9,10 +9,12 @@ const validateLoginInput = require("../error_handler/users/login");
 const validateUserInput = require("../error_handler/users/refresh");
 const validateUserModification = require("../error_handler/users/modification");
 const validateShopModification = require("../error_handler/users/shopModification");
+const validateFavoriteModification = require("../error_handler/users/favoriteModification");
 
 // Load User model
 const User = require("../../models/User");
 const Shop = require("../../models/Shop");
+const Product = require("../../models/Product");
 
 router.get("/getuser/:id", (req, res) => {
     User.findOne({ _id: req.params.id }).then(user => {
@@ -39,6 +41,7 @@ router.get("/getusers", (req, res) => {
                         email: doc.email,
                         password: doc.password,
                         date: doc.date,
+                        favorites: doc.favorites,
                         points: doc.points,
                         shops: doc.shops,
                         _id: doc._id
@@ -124,6 +127,7 @@ router.post("/login", (req, res) => {
                     name: user.name,
                     date: user.date,
                     points: user.points,
+                    favorites: user.favorites,
                     shops: user.shops,
                 };
                 // Sign token
@@ -245,6 +249,60 @@ router.patch("/deleteShop", (req, res) => {
         user.shops.remove(req.body.shop);
         user.save();
         return res.status(200).json({ success: true, shops: user.shops });
+    }).catch(err => {
+        return res.status(500).json({ error: err });
+    });
+});
+
+router.patch("/addFavorite", (req, res) => {
+    // Form validation
+    console.log("Add favorite");
+    console.log(req.body);
+    var { errors, isValid } = validateFavoriteModification(req.body);
+    // Check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+    // Find user by id
+    Product.findOne({ _id: req.body.product }).then(product => {
+        // Check if user exists
+        if (!product) {
+            return res.status(404).json({ idnotfound: "Shop not found" });
+        }
+        User.findOne({ _id: req.body.id }).then(user => {
+            // Check if user exists
+            if (!user) {
+                return res.status(404).json({ idnotfound: "Id not found" });
+            }
+            user.favorites.addToSet(req.body.product);
+            user.save();
+            return res.status(200).json({ success: true, favorites: user.favorites });
+        }).catch(err => {
+            return res.status(500).json({ error: err });
+        });
+    }).catch(err => {
+        return res.status(500).json({ error: err });
+    });
+});
+
+router.patch("/deleteFavorite", (req, res) => {
+    // Form validation
+    console.log("Delete favorite");
+    console.log(req.body);
+    var { errors, isValid } = validateFavoriteModification(req.body);
+    // Check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+    // Find user by id
+    User.findOne({ _id: req.body.id }).then(user => {
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({ idnotfound: "Id not found" });
+        }
+        user.favorites.remove(req.body.product);
+        user.save();
+        return res.status(200).json({ success: true, favorites: user.favorites });
     }).catch(err => {
         return res.status(500).json({ error: err });
     });

@@ -8,12 +8,18 @@ import { Error } from '../components/Error'
 import { AuthContext } from '../contexts/AuthContext';
 import { Loading } from '../components/Loading';
 
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
+
 export function RegistrationScreen({navigation}) {
     const { register }  = React.useContext(AuthContext);
-    const [userName, setUserName] = React.useState('emilie');
-    const [email, setEmail] = React.useState('emilie.bernard@epitech.eu');
-    const [password, setPassword] = React.useState('moncafe1');
-    const [validatePassword, setValidatePassword] = React.useState('moncafe1');
+    const [userName, setUserName] = React.useState();
+    const [email, setEmail] = React.useState();
+    const [password, setPassword] = React.useState();
+    const [validatePassword, setValidatePassword] = React.useState();
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
 
@@ -55,7 +61,7 @@ export function RegistrationScreen({navigation}) {
                             } catch (e) {
                                 console.log(e);
                                 setLoading(false);
-                                setError(e.message);
+                                setError(e);
                             }
                         }} />
                     <TextButton

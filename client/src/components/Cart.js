@@ -7,7 +7,7 @@ import {
     Modal,
 } from 'react-native';
 
-import { ModalOrder } from './ModalOrder'
+import { ModalOrder } from './Modal/ModalOrder'
 import Product from './ListProductCommand';
 
 const Cart = (props) => {
@@ -15,7 +15,6 @@ const Cart = (props) => {
     const changeModalVisible = (state) => {
         setIsModalVisible(state);
     };
-
     return (
         <View style={styles.container}>
             {props.commands.length ? (

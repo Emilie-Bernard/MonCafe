@@ -11,6 +11,7 @@ import {
     StyleSheet,
     Text,
     Animated,
+    TouchableOpacity
 } from 'react-native';
 
 import { UserContext } from '../contexts/userContext';
@@ -24,6 +25,7 @@ export function ProductScreen({ navigation }) {
     const [shops, setShops] = React.useState([]);
     const [shop, setShop] = React.useState();
     const [type, setType] = React.useState(0);
+    const [error, setError] = React.useState(false);
     const scrollX = React.useRef(new Animated.Value(0)).current;
 
     const [products, setProducts] = React.useState([]);
@@ -38,9 +40,12 @@ export function ProductScreen({ navigation }) {
             };
             axios.post(BASE_URL + "/api/products/getMany", productsData).then(({ data }) => {
                 setProducts(data.products);
-                console.log(data.products[0]);
-            })
-        })
+            }).catch(
+                setError(true)
+            )
+        }).catch(
+            setError(true)
+        )
     }, []);
 
     const onItemIndexChange = React.useCallback((i) => {
@@ -52,7 +57,9 @@ export function ProductScreen({ navigation }) {
         axios.post(BASE_URL + "/api/products/getMany", productsData).then(({ data }) => {
             setProducts(data.products);
             //console.log(data.products[0].type);
-        })
+        }).catch(
+            setError(true)
+        )
     }, [products, shop]);
 
     const onShopChange = React.useCallback((shop) => {
@@ -64,7 +71,9 @@ export function ProductScreen({ navigation }) {
         axios.post(BASE_URL + "/api/products/getMany", productsData).then(({ data }) => {
             setProducts(data.products);
             //console.log(data.products[0].type);
-        })
+        }).catch(
+            setError(true)
+        )
     }, [products, shop]);
 
     const categories = [
@@ -149,15 +158,15 @@ export function ProductScreen({ navigation }) {
                     }
                 }}>
             </Animated.FlatList>
-                <View style={styles.searchBox}>
+            <View style={styles.searchBox}>
                 <Icon name="search" justifyContent='start' color={"#000"} size={30} onPress={() => {
                     navigation.navigate('Search')
-                    }} />
-                </View>
+                }} />
+            </View>
             <Product products={products} size={220} bottom={300} />
-        </View>
-    );
-}
+        </View>)
+};
+
 
 const styles = StyleSheet.create({
     container: {
@@ -192,4 +201,25 @@ const styles = StyleSheet.create({
         width: '90%',
         borderRadius: 5,
     },
+    touchableOpacity: {
+        flex: 1,
+        backgroundColor: "#FFC469",
+        borderRadius: 5,
+        marginTop: 230,
+        marginBottom: 5,
+        alignItems: 'center',
+        padding: 5,
+    },
+    buttonText: {
+        color: "white",
+    },
+    error: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: "center",
+    },
+    textError: {
+        fontSize: 15,
+        color: "#646464",
+    }
 })
