@@ -17,27 +17,30 @@ import Icon from 'react-native-ionicons';
 export function SettingScreen({ navigation }) {
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
-    const { logout } = React.useContext(AuthContext);
+    const { refresh } = React.useContext(AuthContext);
     const user = useContext(UserContext);
     const [name, setName] = React.useState(user.name);
     const [email, setEmail] = React.useState(user.email);
-    const [password, setPassword] = React.useState(user.password);
-    const [password1, setPassword1] = React.useState(user.password1);
+    const [password, setPassword] = React.useState("");
+    const [password1, setPassword1] = React.useState("");
 
-    console.log(user);
-    const change = () => {
-        const userDate = {
-            name: "",
-            email: "",
-            password: "",
-            password1: "",
+    const change = async () => {
+        const userData = {
+            name: name,
+            email: email,
+            password: password,
+            password1: password1,
         }
-        axios.get(BASE_URL + "/api/users/update/" + user.id, userData).then(({ data }) => {
-
-        }).catch (error => {
-        setState({ error });
+        await axios.patch(BASE_URL + "/api/users/update/" + user.id, userData).then(({ data }) => {
+            refresh(user.id);
+            setLoading(false);
+            setError("");
+            navigation.goBack();
+        }).catch(e => {
+            console.log(e.message)
+            setError(e.message);
+            setLoading(false);
     });
-    setLoading(false);
     }
 
     return (
@@ -47,10 +50,9 @@ export function SettingScreen({ navigation }) {
                     navigation.goBack()
                 }} />
             </View>
-
+            <Error error={error} />
             <View style={styles.form}>
                 <Text>Changez vos informations</Text>
-                <Error error={error} />
                 <Input
                     style={styles.input}
                     placeholder="Email..."

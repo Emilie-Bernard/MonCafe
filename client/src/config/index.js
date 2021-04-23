@@ -1,1 +1,1 @@
-export const BASE_URL = "http://ec2-15-188-14-138.eu-west-3.compute.amazonaws.com:5000"
+export const BASE_URL = "http://ec2-35-180-111-111.eu-west-3.compute.amazonaws.com:5000"

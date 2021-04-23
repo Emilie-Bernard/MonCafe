@@ -8,12 +8,48 @@ import { Error } from '../components/Error'
 import { AuthContext } from '../contexts/AuthContext';
 import { Loading } from '../components/Loading';
 
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+    webClientId: '762461888806-ttsbaa2v5s1kao6fqn8pj0iblgmevfm4.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    //offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+});
+
+
 export function LoginScreen({navigation}) {
     const { login } = React.useContext(AuthContext);
     const [email, setEmail] = React.useState('emilie.bernard@epitech.eu');
     const [password, setPassword] = React.useState('moncafe1');
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
+
+    signIn = async () => {
+        try {
+            await GoogleSignin.hasPlayServices();
+            const { accessToken, idToken } = await GoogleSignin.signIn();
+            console.log(accessToken);
+            console.log(idToken);
+        } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                console.log("cancelled");
+                // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation (e.g. sign in) is in progress already
+                console.log("in progress");
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                // play services not available or outdated
+                console.log("not available");
+            } else {
+                // some other error happened
+                console.log("other problem:\n" + error);
+                console.log(error.code);
+            }
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -50,6 +86,12 @@ export function LoginScreen({navigation}) {
                         onPress={() => {
                             navigation.navigate('Registration')
                          }} />
+                    <GoogleSigninButton
+                        style={{ width: 192, height: 48 }}
+                        size={GoogleSigninButton.Size.Wide}
+                        color={GoogleSigninButton.Color.Dark}
+                        onPress={() => {signIn()}}
+                        disabled={loading} />
                     
                 </View>
                 <Loading loading={loading} />

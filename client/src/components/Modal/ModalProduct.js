@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext, useCallback } from 'react';
 import {
     StyleSheet, Text, View, Image,
     TouchableOpacity, Dimensions
@@ -8,7 +8,6 @@ import StarRating from '../StarRating';
 import { CommandContext } from '../../contexts/CommandContext';
 
 import Icon from 'react-native-ionicons';
-import { add } from 'react-native-reanimated';
 
 
 const WIDTH = Dimensions.get('window').width;
@@ -17,7 +16,6 @@ const PICTURE_SIZE = 150;
 
 const ModalProduct = (props) => {
     const { addCommand } = useContext(CommandContext);
-
     const closeModal = (bool) => {
         props.changeModalVisible(bool);
     }; 
@@ -26,18 +24,6 @@ const ModalProduct = (props) => {
         addCommand(product);
         props.changeModalVisible(bool);
     };
-
-    const addFavorite = useCallback(async (productId) => {
-        const userData = {
-            product: productId,
-            id: user.id,
-        };
-        let uri = user.favorite.includes(productId) ? "/api/users/deleteShop" : "/api/users/addShop";
-        await axios.patch(BASE_URL + uri, userData).catch(function (error) {
-            console.log(error);
-        });
-        refresh(user.id);
-    });
 
     return (
         <TouchableOpacity
@@ -53,9 +39,6 @@ const ModalProduct = (props) => {
                     <StarRating ratings={props.product.rating} reviews={props.product.reviews} size={25} />
                     <Text style={styles.price}>{props.product.price ? props.product.price : 0}€</Text>
                 </View>
-                <Icon name={user.favorite.includes(props.product.id) ? "heart" : "heart-empty"} color={"#000"} size={30} onPress={() => {
-                    addFavorite(props.product.id)
-                }} />
                 <View style={styles.button}>
                     <TouchableOpacity 
                         style={styles.touchableOpacity}

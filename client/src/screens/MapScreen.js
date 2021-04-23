@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import axios from 'axios';
-import Icon from 'react-native-ionicons';
+import Icon from 'react-native-ionicons'; 
+
 
 import { BASE_URL } from '../config';
 import StarRating from '../components/StarRating';
@@ -154,15 +155,6 @@ export function MapScreen({ }) {
                     );
                 })}
             </MapView>
-            <View style={styles.searchBox}>
-                <TextInput
-                    placeholder="Recherche"
-                    placeholderTextColor="#000"
-                    autoCapitalize="none"
-                    style={{ flex: 1, padding: 0 }}
-                />
-                <Icon name="search" color={"#000"} size={30} />
-            </View>
             <Animated.ScrollView
                 ref={_scrollView}
                 horizontal

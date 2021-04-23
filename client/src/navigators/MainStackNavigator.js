@@ -17,7 +17,6 @@ const ProductStack = createStackNavigator();
 import { createDrawerNavigator } from '@react-navigation/drawer';
 const UserStack = createDrawerNavigator();
 
-
 ProductStackScreen = () => {
     return (
         <ProductStack.Navigator
