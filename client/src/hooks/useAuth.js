@@ -6,6 +6,7 @@ import jwt_decode from "jwt-decode";
 import { BASE_URL } from '../config';
 import { createAction } from '../utils/createAction';
 import { sleep } from '../utils/sleep';
+import { LoginManager } from 'react-native-fbsdk-next';
 
 export function useAuth() {
     const [state, dispatch] = React.useReducer(
@@ -26,7 +27,7 @@ export function useAuth() {
                     return {
                         ...state,
                         loading: action.payload,
-                    }; 
+                    };
                 case 'REFRESH_USER':
                     return {
                         ...state,
@@ -43,25 +44,48 @@ export function useAuth() {
     );
     const auth = React.useMemo(
         () => ({
-            login: async (email, password) => {
-                const userData = {
-                    email,
-                    password
-                };
-                const { data } = await axios
-                    .post(BASE_URL + "/api/users/login", userData).catch(function (error) {
-                        console.log(error);
-                        return error;
-                    });
-                const user = {
-                    token: data.token,
-                };
-                const decoded = jwt_decode(user.token);
-                await SecureStorage.setItem('user', JSON.stringify(decoded));
-                dispatch(createAction('SET_USER', decoded));
+            login: async (email, password, type, name) => {
+                if (type == "normal") {
+                    const userData = {
+                        email,
+                        password
+                    };
+                    const { data } = await axios
+                        .post(BASE_URL + "/api/users/login", userData).catch(function (error) {
+                            console.log(error);
+                          return error;
+                        });
+                    const user = {
+                        token: data.token,
+                    };
+                    const decoded = jwt_decode(user.token);
+                    await SecureStorage.setItem('user', JSON.stringify(decoded));
+                    dispatch(createAction('SET_USER', decoded));
+                }
+                else if (type == "facebook") {
+                    const userData = {
+                        name,
+                        email,
+                        facebookId: password
+                    };
+                    const { data } = await axios
+                        .post(BASE_URL + "/api/users/facebook", userData).catch(function (error) {
+                            console.log(error);
+                            return error;
+                        });
+                    console.log(name, email, password);
+                    const user = {
+                        token: data.token,
+                    };
+                    console.log(user);
+                    const decoded = jwt_decode(user.token);
+                    await SecureStorage.setItem('user', JSON.stringify(decoded));
+                    dispatch(createAction('SET_USER', decoded));
+                }
             },
             logout: async () => {
                 await SecureStorage.removeItem('user');
+                LoginManager.logOut()
                 dispatch(createAction('REMOVE_USER'));
             },
             register: async (name, email, password, password2) => {

@@ -6,13 +6,17 @@ const jwt = require("jsonwebtoken");
 // Load input validation
 const validateRegisterInput = require("../error_handler/users/signin");
 const validateLoginInput = require("../error_handler/users/login");
+const validateFacebookInput = require("../error_handler/users/facebook");
 const validateUserInput = require("../error_handler/users/refresh");
 const validateUserModification = require("../error_handler/users/modification");
 const validateShopModification = require("../error_handler/users/shopModification");
+const validateFavoriteModification = require("../error_handler/users/favoriteModification");
 
 // Load User model
 const User = require("../../models/User");
 const Shop = require("../../models/Shop");
+const Product = require("../../models/Product");
+const facebook = require("../error_handler/users/facebook");
 
 router.get("/getuser/:id", (req, res) => {
     User.findOne({ _id: req.params.id }).then(user => {
@@ -39,6 +43,7 @@ router.get("/getusers", (req, res) => {
                         email: doc.email,
                         password: doc.password,
                         date: doc.date,
+                        favorites: doc.favorites,
                         points: doc.points,
                         shops: doc.shops,
                         _id: doc._id
@@ -124,6 +129,7 @@ router.post("/login", (req, res) => {
                     name: user.name,
                     date: user.date,
                     points: user.points,
+                    favorites: user.favorites,
                     shops: user.shops,
                 };
                 // Sign token
@@ -147,6 +153,92 @@ router.post("/login", (req, res) => {
                     .json({ error: "Password incorrect" });
             }
         });
+    });
+});
+
+
+// @route POST api/users/facebook
+// @desc Login or register user with facebook and return JWT token
+// @access Public
+router.post("/facebook", (req, res) => {
+    console.log("inser facebook");
+    // Form validation
+    const { errors, isValid } = validateFacebookInput(req.body);
+    // Check validation
+    if (!isValid) {
+        console.log("invalid body" + req.body);
+        return res.status(400).json(errors);
+    }
+
+    const email = req.body.email;
+    const facebookId = req.body.facebookId;
+    // Find user by email
+    User.findOne({ email }).then(user => {
+        // Check if user exists
+        if (!user) {
+            const newUser = new User({
+                name: req.body.name,
+                email: req.body.email,
+                facebookId: req.body.facebookId
+            });
+            // Hash password before saving in database
+            newUser
+                .save()
+                .then(user => res.json(user))
+                .catch(err => console.log(err));
+        }
+        if (user.facebookId) {
+            // Check password
+            compare(user.facebookId, facebookId).then(isMatch => {
+                if (isMatch) {
+                    console.log("found user");
+                    // User matched
+                    // Create JWT Payload
+                    const payload = {
+                        id: user.id,
+                        name: user.name,
+                        date: user.date,
+                        points: user.points,
+                        favorites: user.favorites,
+                        shops: user.shops,
+                    };
+                    // Sign token
+                    jwt.sign(
+                        payload,
+                        "secret",
+                        {
+                            expiresIn: 31556926 // 1 year in seconds
+                        },
+                        (err, token) => {
+                            res.json({
+                                success: true,
+                                token: "Bearer " + token
+                            });
+                        }
+                    );
+                } else {
+                    console.log("wrong facebook Id");
+                    return res
+                        .status(400)
+                        .json({ error: "FacebookId incorrect" });
+                }
+            });
+        }
+        else {
+            const updateOps = {};
+            if (req.body.facebookId)
+                updateOps["facebookId"] = req.body.facebookId;
+            User.updateOne({ email: email }, { $set: updateOps })
+                .exec()
+                .then(result => {
+                    return res.status(200).json({ success: true });
+                })
+                .catch(err => {
+                    return res.status(500).json({ error: err });
+                });
+            user.save();
+            return res.status(200).json({ success: true, shops: user.shops });
+        }
     });
 });
 
@@ -175,6 +267,7 @@ router.patch("/update/:id", (req, res) => {
     }
     if (req.body.points)
         updateOps["points"] = req.body.points;
+    console.log(req.params.id);
     // Find user by id
     User.findOne({ _id: req.params.id }).then(user => {
         // Check if user exists
@@ -192,6 +285,7 @@ router.patch("/update/:id", (req, res) => {
             });
 
     }).catch(err => {
+        console.log(err);
         return res.status(500).json({ error: err });
     })
 });
@@ -250,6 +344,60 @@ router.patch("/deleteShop", (req, res) => {
     });
 });
 
+router.patch("/addFavorite", (req, res) => {
+    // Form validation
+    console.log("Add favorite");
+    console.log(req.body);
+    var { errors, isValid } = validateFavoriteModification(req.body);
+    // Check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+    // Find user by id
+    Product.findOne({ _id: req.body.product }).then(product => {
+        // Check if user exists
+        if (!product) {
+            return res.status(404).json({ idnotfound: "Shop not found" });
+        }
+        User.findOne({ _id: req.body.id }).then(user => {
+            // Check if user exists
+            if (!user) {
+                return res.status(404).json({ idnotfound: "Id not found" });
+            }
+            user.favorites.addToSet(req.body.product);
+            user.save();
+            return res.status(200).json({ success: true, favorites: user.favorites });
+        }).catch(err => {
+            return res.status(500).json({ error: err });
+        });
+    }).catch(err => {
+        return res.status(500).json({ error: err });
+    });
+});
+
+router.patch("/deleteFavorite", (req, res) => {
+    // Form validation
+    console.log("Delete favorite");
+    console.log(req.body);
+    var { errors, isValid } = validateFavoriteModification(req.body);
+    // Check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+    // Find user by id
+    User.findOne({ _id: req.body.id }).then(user => {
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({ idnotfound: "Id not found" });
+        }
+        user.favorites.remove(req.body.product);
+        user.save();
+        return res.status(200).json({ success: true, favorites: user.favorites });
+    }).catch(err => {
+        return res.status(500).json({ error: err });
+    });
+});
+
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
@@ -277,6 +425,7 @@ router.post("/refresh", (req, res) => {
             name: user.name,
             date: user.date,
             points: user.points,
+            favorites: user.favorites,
             shops: user.shops,
         };
         // Sign token

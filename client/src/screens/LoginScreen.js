@@ -14,9 +14,17 @@ import {
     statusCodes,
 } from '@react-native-google-signin/google-signin';
 
+import {
+    LoginButton,
+    AccessToken,
+    GraphRequest,
+    GraphRequestManager,
+} from 'react-native-fbsdk-next';
+
 GoogleSignin.configure({
     webClientId: '762461888806-ttsbaa2v5s1kao6fqn8pj0iblgmevfm4.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    //offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    hostedDomain: '',
 });
 
 
@@ -26,6 +34,7 @@ export function LoginScreen({navigation}) {
     const [password, setPassword] = React.useState('moncafe1');
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
+    const [userInfo, setUserInfo] = React.useState([]);
 
     signIn = async () => {
         try {
@@ -51,6 +60,28 @@ export function LoginScreen({navigation}) {
         }
     };
 
+    getInfoFromToken = token => {
+        const PROFILE_REQUEST_PARAMS = {
+            fields: {
+                string: 'id,name,first_name,last_name,email',
+            },
+        };
+        const profileRequest = new GraphRequest(
+            '/me',
+            { token, parameters: PROFILE_REQUEST_PARAMS },
+            (error, user) => {
+                if (error) {
+                    console.log('login info has error: ' + error);
+                } else {
+                    setUserInfo(user);
+                    console.log('result:', user);
+                    login(user['email'], user['id'], "facebook", user['name']);
+                }
+            },
+        );
+        new GraphRequestManager().addRequest(profileRequest).start();
+    };
+
     return (
         <View style={styles.container}>
             <ImageBackground source={Images.login} style={styles.image} imageStyle={{ opacity: 0.3 }}>
@@ -74,7 +105,7 @@ export function LoginScreen({navigation}) {
                         onPress={async () => { 
                             try {
                                 setLoading(true);
-                                await login(email, password);
+                                await login(email, password, "normal");
                             } catch (e) {
                                 setLoading(false);
                                 setError(e.error);
@@ -92,6 +123,24 @@ export function LoginScreen({navigation}) {
                         color={GoogleSigninButton.Color.Dark}
                         onPress={() => {signIn()}}
                         disabled={loading} />
+                    <LoginButton
+                        onLoginFinished={
+                            (error, result) => {
+                                if (error) {
+                                    console.log("login has error: " + result.error);
+                                } else if (result.isCancelled) {
+                                    console.log("login is cancelled.");
+                                } else {
+                                    AccessToken.getCurrentAccessToken().then(
+                                        (data) => {
+                                            const accessToken = data.accessToken.toString();
+                                            getInfoFromToken(accessToken);
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        onLogoutFinished={() => console.log("logout.")} />
                     
                 </View>
                 <Loading loading={loading} />

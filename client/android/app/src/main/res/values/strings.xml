@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MonCafe</string>
+    <string name="facebook_app_id">756672155195158</string>
+    <string name="server_client_id">762461888806-ttsbaa2v5s1kao6fqn8pj0iblgmevfm4.apps.googleusercontent.com</string>
 </resources>
